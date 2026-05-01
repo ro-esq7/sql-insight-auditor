@@ -271,23 +271,51 @@ def write_json(output_path: str, data: dict) -> None:
     )
 
 
-# Step 15: Run the script from the command line
+# Step 15: Build a default output path when one is not provided
+def build_default_output_path(input_path: str) -> str:
+    """
+    Create a case-specific output file name based on the input SQL file name.
+
+    Example:
+    inputs/normal_case.sql becomes outputs/normal_case_parsed_summary.json
+    """
+    input_file = Path(input_path)
+    output_file_name = f"{input_file.stem}_parsed_summary.json"
+
+    return str(Path("outputs") / output_file_name)
+
+
+# Step 16: Run the script from the command line
 def main() -> None:
     """
     Main command-line workflow.
 
-    Expected format:
-    python parse_sql.py <input_sql_file> <output_json_file>
+    The script supports two formats:
+
+    Option 1: Provide only the input SQL file.
+    The script will automatically create a case-specific output file.
+
+    Example:
+    python parse_sql.py inputs/normal_case.sql
+
+    Option 2: Provide both the input SQL file and the output JSON file.
+
+    Example:
+    python parse_sql.py inputs/normal_case.sql outputs/normal_case_parsed_summary.json
     """
-    if len(sys.argv) != 3:
+    if len(sys.argv) not in [2, 3]:
         print(
-            "Usage: python parse_sql.py <input_sql_file> <output_json_file>",
+            "Usage: python parse_sql.py <input_sql_file> [output_json_file]",
             file=sys.stderr
         )
         sys.exit(1)
 
     input_path = sys.argv[1]
-    output_path = sys.argv[2]
+
+    if len(sys.argv) == 3:
+        output_path = sys.argv[2]
+    else:
+        output_path = build_default_output_path(input_path)
 
     try:
         sql_text = read_sql_file(input_path)
@@ -300,6 +328,6 @@ def main() -> None:
         sys.exit(1)
 
 
-# Step 16: Only run main() when this file is executed directly
+# Step 17: Only run main() when this file is executed directly
 if __name__ == "__main__":
     main()
