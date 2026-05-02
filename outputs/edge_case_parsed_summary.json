@@ -1,0 +1,32 @@
+{
+  "select_fields": [
+    "DISTINCT customer_id"
+  ],
+  "from_clause": "customer_transactions_table",
+  "tables": [
+    "customer_transactions_table",
+    "historical_customers",
+    "recent_customers"
+  ],
+  "joins": [
+    "LEFT JOIN recent_customers r ON h.customer_id = r.customer_id"
+  ],
+  "filters": [
+    "order_date >= DATE_SUB(CURRENT_DATE(), 1095) ), historical_customers AS ( SELECT DISTINCT customer_id FROM customer_transactions_table WHERE order_date < DATE_SUB(CURRENT_DATE(), 1095) ) SELECT COUNT(DISTINCT h.customer_id) AS lapse_customers FROM historical_customers h LEFT JOIN recent_customers r ON h.customer_id = r.customer_id WHERE r.customer_id IS NULL;"
+  ],
+  "group_by": [],
+  "order_by": [],
+  "date_filters": [
+    "order_date >= DATE_SUB(CURRENT_DATE(), 1095) ), historical_customers AS ( SELECT DISTINCT customer_id FROM customer_transactions_table WHERE order_date < DATE_SUB(CURRENT_DATE(), 1095) ) SELECT COUNT(DISTINCT h.customer_id) AS lapse_customers FROM historical_customers h LEFT JOIN recent_customers r ON h.customer_id = r.customer_id WHERE r.customer_id IS NULL;"
+  ],
+  "aggregate_metrics": [],
+  "parser_limitations": [
+    "This parser is intentionally lightweight and works best for common analytical SQL.",
+    "Complex nested queries, CTEs, vendor-specific syntax, and deeply nested expressions may require manual review."
+  ],
+  "risk_flags": [
+    "Query includes joins. Confirm join keys and join type to avoid duplicate or unmatched records.",
+    "Date filters were identified. Confirm whether the date window matches the business question.",
+    "No aggregate metrics were identified. Confirm whether the query is intended to return row-level data."
+  ]
+}

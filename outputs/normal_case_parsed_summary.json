@@ -1,0 +1,38 @@
+{
+  "select_fields": [
+    "DATE_TRUNC('month', order_date) AS order_month",
+    "COUNT(DISTINCT customer_id) AS total_customers",
+    "COUNT(DISTINCT order_id) AS total_orders",
+    "SUM(product_total_amount) AS total_revenue"
+  ],
+  "from_clause": "customer_transactions_table",
+  "tables": [
+    "customer_transactions_table"
+  ],
+  "joins": [],
+  "filters": [
+    "order_date >= '2025-01-01'",
+    "product_total_amount > 0"
+  ],
+  "group_by": [
+    "DATE_TRUNC('month', order_date)"
+  ],
+  "order_by": [
+    "order_month;"
+  ],
+  "date_filters": [
+    "order_date >= '2025-01-01'"
+  ],
+  "aggregate_metrics": [
+    "COUNT(DISTINCT customer_id) AS total_customers",
+    "COUNT(DISTINCT order_id) AS total_orders",
+    "SUM(product_total_amount) AS total_revenue"
+  ],
+  "parser_limitations": [
+    "This parser is intentionally lightweight and works best for common analytical SQL.",
+    "Complex nested queries, CTEs, vendor-specific syntax, and deeply nested expressions may require manual review."
+  ],
+  "risk_flags": [
+    "Date filters were identified. Confirm whether the date window matches the business question."
+  ]
+}
